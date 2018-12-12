@@ -1,0 +1,51 @@
+
+hrsf108Hack Reactor SyllabusMini App Sprint 1Challenge_2
+CSV Report Generator
+Basic Requirements
+Use Express to build a client-server app that generates CSV reports from JSON data.
+
+The JSON->CSV conversion specification is:
+
+  1│
+  2│
+  3│The server must flatten the JSON hierarchy, mapping each item/object in the JSON to a single line of CSV report (see included sample output), where the keys of the JSON objects will be the columns of the CSV report.
+You may assume the JSON data has a regular structure and hierarchy (see included sample file). In other words, all sibling records at a particular level of the hierarchy will have the same set of properties, but child objects might not contain the same properties. In all cases, every property you encounter must be present in the final CSV output.
+You may also assume that child records in the JSON will always be in a property called `children`.
+Use Express to serve up an index.html file and its associated assets
+The client app should be able to submit JSON data to the server, receive a response containing a CSV-formatted result (the way this is done will vary depending on where you are in the challenge).
+Implement all the report generation logic on the server. Do not use any external libraries (such as via npm). You may use jQuery on the client.
+Build your Express app inside server.js and your client app inside the client folder. Don't forget to create a package.json to store your project's dependencies.
+
+Initially, submission of the JSON data (from the client to server) should be done using an HTML form with a single textarea input field (for the entire JSON text) and a submitbutton. When the user clicks submit, POST the form data to the server. The form submission process should use the default browser action/behavior. DO NOT use jQuery/AJAX functions in the submission process.
+
+The response from the server should contain the CSV report along with the form so the user can keep submitting indefinitely, without having to go back to the "form page". DO NOT USE jQuery/AJAX. You may use the supplied examples of JSON and CSV for testing and verification.
+
+Now that you have basic client/server submission working, refactor your form to use a file picker instead of a textarea. Continue to use the browser's default action. DO NOT USE jQuery/AJAX.
+
+Next, refactor to a single page application by using jQuery/AJAX to submit your JSON file to the server using AJAX. Note: a single page app means that once the page loads, no user-generated actions on the page may cause the entire page to reload. You will know the page is reloading if you see a change in your URL. You must prevent this behavior from occurring.
+
+Lastly, add a link to download the most recently created CSV report. You can choose to make this a server-based or client-based action.
+
+You are allowed to use jQuery to manipulate the DOM and handle any DOM events. You may use jQuery/Ajax only when you get to the step in the basic requirements that asks you to do so. For ease of development, be sure to use nodemon to watch for changes in your project. Additionally, no CSS styling is necessary. Use the browser's default styling for all elements on your page.
+
+Use the coding best practices you learned previously to ensure a clear separation of concerns with well-defined interfaces.
+
+If you get stuck or are not sure how to proceed, you may look at the hints file for this challenge to help you along.
+
+Advanced Content
+Add a field to the CSV report that contains a unique identifier (an autoincrementing integer is fine) for each row of the CSV report.
+Add another field to the CSV report that specifies the ID of the parent record. For top-level objects in the JSON, this field will be empty. For any child objects in the JSON hierarchy, this field will refer to the unique identifier in the prior step.
+Add a form field that allows the user to enter a string, which, when present will filter (remove from the CSV report) any records that contain that string.
+Adjust the generation of unique identifiers such that they remain consecutive (no gaps) even after filtering. Ensure that ID references from the child rows to their respective parents are still correct. If a record is filtered that has children, then all children should also be removed.
+Allow some fields to be optional; i.e. some items in the JSON data might have fewer attributes. Collate attributes across all items you encounter and where missing, leave those fields blank in final CSV report.
+Allow the children property to be optional. When omitted it means there are no children.
+Format the CSV report that is received from the server and make it look more readable.
+If not already done, reset the form after each submission but leave the last CSV report on the page.
+Allow the user to submit the JSON data using either a file picker/upload or textarea and use AJAX to serialize the form and submit the data to the server.
+Refactor to using fetch instead of AJAX (fetch is the modern approach to server communication).
+Nightmare Mode
+Store each conversion in a database (suggestion: MongoDB)
+Create a page that shows historical conversions and page that lets you view any single conversion. Render all pages using server-side rendering techniques. Be sure to include some navigation.
+Refactor to use ES6 classes on the server and client. Transpile using babel. Add a build script to your package.json
+Add support for drag and drop of JSON files
+Feedback
