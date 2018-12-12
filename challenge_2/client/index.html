@@ -7,10 +7,16 @@
   <body>
     <h1>Report Generator</h1>
     <div>
-      <form id="form" method="POST" action="/report">
-        <textarea name="inputField" rows="10" cols="20"> </textarea>
+      <form
+        id="form"
+        method="POST"
+        action="/report"
+        enctype="multipart/form-data"
+      >
+        <input name="upload" type="file" value="Upload" />
         <input type="submit" value="Submit" />
       </form>
+
       <a href="/download">Download File</a>
     </div>
   </body>

@@ -1,12 +1,14 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 
 const port = 3000;
 
 const input = [];
 
 app.use(bodyParser.urlencoded());
+app.use(fileUpload()); //upload file
 //bodyParser only parses json if content-type header is set to json
 //default browser form post data ( inputField: hi&hello) in request object body encoding is urlencoded (looks like inputField=hi%26hello ) BUT form value is a string
 
@@ -34,8 +36,8 @@ app.get("/download", (req, res) => {
 
 app.post("/report", (req, res) => {
   //   console.log(req.body, "req.bodyyyyy", typeof req.body, "TYPEOF");
-  console.log("app.js POST ");
-  let people = convert(JSON.parse(req.body.inputField)); //array of strings that accumulate as user adds more input
+
+  let people = convert(JSON.parse(req.files.upload.data)); //array of strings that accumulate as user adds more input
   people.forEach(person => {
     input.push(person);
   });
