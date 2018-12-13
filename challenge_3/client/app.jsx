@@ -1,28 +1,3 @@
-// const Shipping = props => {
-//   return (
-//     <form onSubmit={this.handleShippingSubmit}>
-//       <input type="text" value={this.state.address1} />
-//       <input type="text" value={this.state.address2} />
-//       <input type="text" value={this.state.city} />
-//       <input type="text" value={this.state.state} />
-//       <input type="text" value={this.state.zip_code} />
-//       <input type="submit" value="Next" />
-//     </form>
-//   );
-// };
-
-// const Billing = props => {
-//   return (
-//     <form onSubmit={this.handleBillingSubmit}>
-//       <input type="text" value={this.state.credit_card} />
-//       <input type="text" value={this.state.expiry_date} />
-//       <input type="text" value={this.state.CVV} />
-//       <input type="text" value={this.state.billing_zip_code} />
-//       <input type="submit" value="Next" />
-//     </form>
-//   );
-// };
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -43,6 +18,11 @@ class App extends React.Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.renderButton = this.renderButton.bind(this);
+    this.renderBody = this.renderBody.bind(this);
+    this.renderAccountForm = this.renderAccountForm.bind(this);
+    this.renderShippingForm = this.renderShippingForm.bind(this);
+    this.renderBillingForm = this.renderBillingForm.bind(this);
   }
 
   handleChange(event) {
@@ -53,33 +33,25 @@ class App extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      stepNumber: this.state.stepNumber + 1
     });
-    console.log(event.target.name);
+    // console.log(this.state);
   }
 
-  //   handleShippingSubmit(event) {
-  //     this.setState({
-  //       address1: event.target.value,
-  //       address2: event.target.value,
-  //       city: event.target.value,
-  //       state: event.target.value,
-  //       zip_code: event.target.value
-  //     });
-  //   }
-
-  //   handleBillingSubmit(event) {
-  //     this.setState({
-  //       credit_card: event.target.value,
-  //       expiry_date: event.target.value,
-  //       CVV: event.target.value,
-  //       billing_zip_code: event.target.value
-  //     });
-  //   }
   renderButton() {
     return (
       <button
         onClick={() => {
+          //ajax requset to create row in mysql return row id
+          //
+          $.ajax({
+            method: "POST",
+            url: "/checkout",
+            success: data => {
+              console.log("SUCCESS!");
+            }
+          });
           this.setState({ stepNumber: this.state.stepNumber + 1 });
         }}
       >
@@ -100,60 +72,69 @@ class App extends React.Component {
     );
   }
 
+  renderBillingForm() {
+    return (
+      <Billing
+        handleSubmit={this.handleSubmit}
+        handleChange={this.handleChange}
+        credit_card={this.state.credit_card}
+        expiry_date={this.state.expiry_date}
+        CVV={this.state.CVV}
+        billing_zip_code={this.state.billing_zip_code}
+      />
+    );
+  }
+
+  renderShippingForm() {
+    return (
+      <Shipping
+        handleSubmit={this.handleSubmit}
+        handleChange={this.handleChange}
+        address1={this.state.address1}
+        address2={this.state.address2}
+        city={this.state.city}
+        state={this.state.state}
+        zip_code={this.state.zip_code}
+      />
+    );
+  }
+
+  //pass state as props to <Confirmation/> to render summary as opposed to quary db
+  renderConfirmation() {
+    return (
+      <Confirmation
+        summaryInfo={this.state}
+        handleClick={() => {
+          this.setState({
+            stepNumber: 0
+          });
+        }}
+      />
+    );
+  }
+
   renderBody() {
     switch (this.state.stepNumber) {
       case 0:
         return this.renderButton();
       case 1:
         return this.renderAccountForm();
+      case 2:
+        return this.renderShippingForm();
+      case 3:
+        return this.renderBillingForm();
+      case 4:
+        return this.renderConfirmation();
     }
   }
 
   render() {
     return (
-      <div>
+      <div className="renderBody">
         <h1>Shopping hoi!</h1>
-        {this.renderBody()}
+        <div>{this.renderBody()}</div>
       </div>
     );
-
-    // return (
-    //   <div>
-    //     <h1>Shopping time!</h1>
-
-    //     <button>{"Checkout"}</button>
-    //     <div>
-    //       <Account
-    //         handleSubmit={this.handleSubmit}
-    //         handleChange={this.handleChange}
-    //         name={this.state.name}
-    //         email={this.state.email}
-    //         password={this.state.password}
-    //       />
-    //     </div>
-    //     <div>
-    //       <Shipping
-    //         handleSubmit={this.handleSubmit}
-    //         handleChange={this.handleChange}
-    //         address1={this.state.address1}
-    //         address2={this.state.address2}
-    //         city={this.state.city}
-    //         state={this.state.state}
-    //         zip_code={this.state.zip_code}
-    //       />
-    //     </div>
-    //     <div>
-    //       <Billing
-    //         handleSubmit={this.handleSubmit}
-    //         handleChange={this.handleChange}
-    //         credit_card={this.state.credit_card}
-    //         expiry_date={this.state.expiry_date}
-    //         CVV={this.state.CVV}
-    //         billing_zip_code={this.state.billing_zip_code}
-    //       />
-    //     </div>
-    //   </div>
-    // );
   }
 }
 
@@ -193,25 +174,39 @@ const Shipping = props => {
     <form onSubmit={props.handleSubmit}>
       <input
         type="text"
-        name="name"
-        placeholder="name"
-        value={props.name}
+        name="address1"
+        placeholder="address1"
+        value={props.address1}
         onChange={props.handleChange}
       />
 
       <input
         type="text"
-        name="email"
-        placeholder="email"
-        value={props.email}
+        name="address2"
+        placeholder="address2"
+        value={props.address2}
         onChange={props.handleChange}
       />
 
       <input
         type="text"
-        name="password"
-        placeholder="password"
-        value={props.password}
+        name="city"
+        placeholder="city"
+        value={props.city}
+        onChange={props.handleChange}
+      />
+      <input
+        type="text"
+        name="state"
+        placeholder="state"
+        value={props.state}
+        onChange={props.handleChange}
+      />
+      <input
+        type="text"
+        name="zip_code"
+        placeholder="zip_code"
+        value={props.zip_code}
         onChange={props.handleChange}
       />
       <input type="submit" value="Next" />
@@ -224,29 +219,57 @@ const Billing = props => {
     <form onSubmit={props.handleSubmit}>
       <input
         type="text"
-        name="name"
-        placeholder="name"
-        value={props.name}
+        name="credit_card"
+        placeholder="credit card"
+        value={props.credit_card}
         onChange={props.handleChange}
       />
 
       <input
         type="text"
-        name="email"
-        placeholder="email"
-        value={props.email}
+        name="expiry_date"
+        placeholder="expiry date"
+        value={props.expiry_date}
         onChange={props.handleChange}
       />
 
       <input
         type="text"
-        name="password"
-        placeholder="password"
-        value={props.password}
+        name="CVV"
+        placeholder="CVV"
+        value={props.CVV}
+        onChange={props.handleChange}
+      />
+      <input
+        type="text"
+        name="billing_zip_code"
+        placeholder="billing_zip_code"
+        value={props.billing_zip_code}
         onChange={props.handleChange}
       />
       <input type="submit" value="Next" />
     </form>
+  );
+};
+
+const Confirmation = props => {
+  return (
+    <div className="orderSummary">
+      <h1>{"Order Summary"}</h1>
+      <p>{props.summaryInfo.name}</p>
+      <p>{props.summaryInfo.email}</p>
+      <p>{props.summaryInfo.password}</p>
+      <p>{props.summaryInfo.address1}</p>
+      <p>{props.summaryInfo.address2}</p>
+      <p>{props.summaryInfo.city}</p>
+      <p>{props.summaryInfo.state}</p>
+      <p>{props.summaryInfo.zip_code}</p>
+      <p>{props.summaryInfo.credit_card}</p>
+      <p>{props.summaryInfo.CVV}</p>
+      <p>{props.summaryInfo.expiry_date}</p>
+      <p>{props.summaryInfo.billing_zip_code}</p>
+      <button onClick={props.handleClick}>Purchase</button>;
+    </div>
   );
 };
 

@@ -1,0 +1,12 @@
+body {
+  display: flex;
+}
+
+.renderBody {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.orderSummary {
+  justify-content: center;
+}
