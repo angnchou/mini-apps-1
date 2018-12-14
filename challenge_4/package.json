@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "react-dev": "webpack -d --watch"
   },
   "keywords": [],
@@ -15,6 +15,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jquery": "^3.3.1",
+    "nodemon": "^1.18.8",
     "path": "^0.12.7",
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
